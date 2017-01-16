@@ -7,42 +7,6 @@
     root.scrolltrap = factory();
   }
 }(this, function() {
-;(function(root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    define([], factory);
-  } else if (typeof exports === 'object') {
-    module.exports = factory();
-  } else {
-    root.scrolltrap = factory();
-  }
-}(this, function() {
-;(function(root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    define([], factory);
-  } else if (typeof exports === 'object') {
-    module.exports = factory();
-  } else {
-    root.scrolltrap = factory();
-  }
-}(this, function() {
-;(function(root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    define([], factory);
-  } else if (typeof exports === 'object') {
-    module.exports = factory();
-  } else {
-    root.scrolltrap = factory();
-  }
-}(this, function() {
-;(function(root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    define([], factory);
-  } else if (typeof exports === 'object') {
-    module.exports = factory();
-  } else {
-    root.scrolltrap = factory();
-  }
-}(this, function() {
 var scrollTrap = (function () {
     function scrollTrap() {
     }
@@ -173,18 +137,6 @@ var scrollTrap = (function () {
 scrollTrap.debug = false;
 scrollTrap.trappedElements = [];
 scrollTrap.defaultTrapClassName = "trap-scroll-enabled";
-
-return scrolltrap;
-}));
-
-return scrolltrap;
-}));
-
-return scrolltrap;
-}));
-
-return scrolltrap;
-}));
 
 return scrolltrap;
 }));
