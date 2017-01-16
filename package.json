@@ -2,8 +2,26 @@
   "name": "scrolltrap",
   "version": "1.0.0",
   "author": "Gioele Antoci",
-  "license": "ISC",
+  "contributors": [
+    {
+      "name": "Gioele Antoci",
+      "email": "gioele-antoci@gmail.com",
+      "url": "https://github.com/gioele-antoci"
+    }
+  ],
+  "license": "MIT",
   "description": "",
+  "main": "dist/scrolltrap.js",
+  "bugs": {
+    "url": "https://github.com/latitudegeo/scrolltrap/issues"
+  },
+  "keywords": [
+    "scrolltrap",
+    "trap",
+    "scroll",
+    "typescript",
+    "javascript"
+  ],
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-umd": "^0.2.0",
