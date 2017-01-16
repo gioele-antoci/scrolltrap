@@ -2,8 +2,8 @@
   "name": "scrolltrap",
   "version": "1.0.0",
   "author": "Gioele Antoci",
-  "license": "ISC",
-  "description": "",
+  "license": "MIT",
+  "description": "Prevent page from scrolling after having reached the end of a scrollable element",
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-umd": "^0.2.0",
