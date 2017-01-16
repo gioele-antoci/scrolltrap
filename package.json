@@ -1,0 +1,13 @@
+{
+  "name": "scrolltrap",
+  "version": "1.0.0",
+  "author": "Gioele Antoci",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-umd": "^0.2.0",
+    "gulp-uglify": "^2.0.0",
+    "del": "^2.2.2"
+  }
+}
