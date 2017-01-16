@@ -1,9 +1,11 @@
 # Scrolltrap
 
-[![Dependency Status](https://img.shields.io/badge/Dependencies-None-brightgreen.svg)](https://david-dm.org/latitudegeo/showcaser) [![npm version](https://img.shields.io/badge/npm%20package-1.0.0-brightgreen.svg)](https://www.npmjs.com/package/scrolltrap)
-
 Prevent page from scrolling after having reached the end of a scrollable element
 
+
+### Prerequisites
+
+None
 
 
 ### Installing
@@ -20,15 +22,11 @@ npm install --save scrolltrap
 bower install scrolltrap
 ```
 
-**Use a CDN**
-```html
-<script src="https://cdn.rawgit.com/gioele-antoci/scrolltrap/2ce75825/dist/scrolltrap.js"></script>
-```
+Or grab the file directly
 
-**Or grab the file directly** from the [dist](dist) folder
-```html
+```
 <script src="app.js"></script>
-<script src="app.js"></scirpt>
+<script src="app.js"></script>
 ```
 
 
