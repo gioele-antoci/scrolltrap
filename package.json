@@ -1,6 +1,6 @@
 {
   "name": "scrolltrap",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Gioele Antoci",
   "contributors": [
     {
@@ -10,7 +10,7 @@
     }
   ],
   "license": "MIT",
-  "description": "Prevent page from scrolling after having reached the end of a scrollable element", 
+  "description": "Prevent page from scrolling after having reached the end of a scrollable element",
   "main": "dist/scrolltrap.js",
   "bugs": {
     "url": "https://github.com/latitudegeo/scrolltrap/issues"
