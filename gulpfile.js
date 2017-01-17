@@ -1,10 +1,11 @@
 ﻿var gulp = require('gulp');
 var umd = require('gulp-umd');
 var uglify = require('gulp-uglify');
-var del = require('del');
+var clean = require('gulp-clean');
 
 gulp.task('umd', function () {
-    return gulp.src('src/scrolltrap.js')
+    console.log("umd-ing");
+    return gulp.src('scrolltrap.js')
 	.pipe(umd({
 	    templateName: "amdNodeWeb",
 	    namespace: function (file) {
@@ -13,8 +14,7 @@ gulp.task('umd', function () {
 	    exports: function (file) {
 	        return "scrolltrap";
 	    }
-	}))
-	.pipe(gulp.dest('src'));
+	})).pipe(gulp.dest('src'));
 });
 
 gulp.task('uglify', function () {
@@ -24,7 +24,8 @@ gulp.task('uglify', function () {
 });
 
 gulp.task('cleanup', function () {
-    return del(['src/*.js']);
+    return gulp.src(['src/*.js']).pipe(clean());
 });
 
-gulp.task('default', ['umd', 'uglify', 'cleanup']);
+gulp.task('build', ['cleanup', 'umd', 'uglify']);
+gulp.task('default', ['build']);

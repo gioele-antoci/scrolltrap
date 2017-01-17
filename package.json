@@ -10,7 +10,7 @@
     }
   ],
   "license": "MIT",
-  "description": "Prevent page from scrolling after having reached the end of a scrollable element",
+  "description": "Prevent page from scrolling after having reached the end of a scrollable element", 
   "main": "dist/scrolltrap.js",
   "bugs": {
     "url": "https://github.com/latitudegeo/scrolltrap/issues"
@@ -26,6 +26,6 @@
     "gulp": "^3.9.1",
     "gulp-umd": "^0.2.0",
     "gulp-uglify": "^2.0.0",
-    "del": "^2.2.2"
+    "gulp-clean": "^0.3.2"
   }
 }
