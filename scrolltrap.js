@@ -8,7 +8,7 @@ var scrolltrap = (function () {
             token: scrolltrap._generateToken(),
             options: options || {}
         };
-        scrolltrap.elements.push(trapEl);
+        scrolltrap._elements.push(trapEl);
         el.addEventListener("mouseleave", scrolltrap._mouseLeave);
         el.addEventListener("mouseenter", function (e) { return scrolltrap._mouseEnter(trapEl); });
         //Return token for later actions on this el
@@ -16,14 +16,14 @@ var scrolltrap = (function () {
     };
     scrolltrap.destroy = function (token) {
         //Find elelement we want to destroy and remove it from the array
-        var trappedEl = scrolltrap.elements.filter(function (x) { return x.token === token; })[0];
+        var trappedEl = scrolltrap._elements.filter(function (x) { return x.token === token; })[0];
         if (trappedEl) {
             //remove item from local collection of trapped elements
-            scrolltrap.elements.splice(scrolltrap.elements.indexOf(trappedEl), 1);
+            scrolltrap._elements.splice(scrolltrap._elements.indexOf(trappedEl), 1);
             //De-attach event handlers
             trappedEl.el.removeEventListener("mouseleave", scrolltrap._mouseLeave);
             trappedEl.el.removeEventListener("mouseenter", function (e) { return scrolltrap._mouseEnter; });
-            if (!scrolltrap.elements.length) {
+            if (!scrolltrap._elements.length) {
                 document.removeEventListener("wheel", scrolltrap._trapWheel);
             }
         }
@@ -48,24 +48,24 @@ var scrolltrap = (function () {
         }
         document.removeEventListener("wheel", scrolltrap._trapWheel);
         document.removeEventListener("DOMNodeRemoved DOMNodeInserted input", scrolltrap._domChanged);
-        document.body.classList.remove(scrolltrap.defaultTrapClassName);
-        if (scrolltrap.trappedElement && scrolltrap.trappedElement.options.classname) {
-            scrolltrap.trappedElement.el.classList.remove(scrolltrap.trappedElement.options.classname);
+        scrolltrap.trapEngageable = false;
+        if (scrolltrap._trappedElement && scrolltrap._trappedElement.options.classname) {
+            scrolltrap._removeClass(scrolltrap._trappedElement.el, scrolltrap._trappedElement.options.classname);
         }
-        scrolltrap.trappedElement = null;
+        scrolltrap._trappedElement = null;
     };
     scrolltrap._domChanged = function (e) {
         if (scrolltrap.debug) {
             console.log(e.type);
         }
         // START Throttler 
-        if (scrolltrap.listenerToken) {
-            clearTimeout(scrolltrap.listenerToken);
+        if (scrolltrap._listenerToken) {
+            clearTimeout(scrolltrap._listenerToken);
         }
-        scrolltrap.listenerToken = setTimeout(function () {
+        scrolltrap._listenerToken = setTimeout(function () {
             //Re calculate whether trap should be engaged or nto
-            scrolltrap._refresh(scrolltrap.trappedElement);
-            scrolltrap.listenerToken = null;
+            scrolltrap._refresh(scrolltrap._trappedElement);
+            scrolltrap._listenerToken = null;
         }, 100);
     };
     scrolltrap._refresh = function (trappedEl) {
@@ -79,24 +79,24 @@ var scrolltrap = (function () {
         var contentHeight = el.scrollHeight; // height of scrollable content
         // Content is higher than container, scroll bar is VISIBLE
         if (contentHeight > containerHeight) {
-            document.body.classList.add(scrolltrap.defaultTrapClassName);
-            scrolltrap.trappedElement = trappedEl;
+            scrolltrap.trapEngageable = true;
+            scrolltrap._trappedElement = trappedEl;
         }
         else {
-            document.body.classList.remove(scrolltrap.defaultTrapClassName);
-            scrolltrap.trappedElement = null;
+            scrolltrap.trapEngageable = false;
+            scrolltrap._trappedElement = null;
         }
     };
     scrolltrap._trapWheel = function (wheelEvent) {
         //Trap not engaged, let the scroll happen
-        if (!document.body.classList.contains(scrolltrap.defaultTrapClassName)) {
-            if (scrolltrap.trappedElement.options.classname) {
-                scrolltrap.trappedElement.el.classList.remove(scrolltrap.trappedElement.options.classname);
+        if (!scrolltrap.trapEngageable) {
+            if (scrolltrap._trappedElement.options.classname) {
+                scrolltrap._removeClass(scrolltrap._trappedElement.el, scrolltrap._trappedElement.options.classname);
             }
             return true;
         }
         else {
-            var el = scrolltrap.trappedElement.el;
+            var el = scrolltrap._trappedElement.el;
             var curScrollPos = el.scrollTop;
             var dY = wheelEvent.deltaY;
             if (scrolltrap.debug) {
@@ -119,14 +119,14 @@ var scrolltrap = (function () {
                 if (scrolltrap.debug) {
                     console.log("trapped");
                 }
-                if (scrolltrap.trappedElement.options.classname) {
-                    scrolltrap.trappedElement.el.classList.add(scrolltrap.trappedElement.options.classname);
+                if (scrolltrap._trappedElement.options.classname) {
+                    scrolltrap._addClass(scrolltrap._trappedElement.el, scrolltrap._trappedElement.options.classname);
                 }
                 wheelEvent.preventDefault();
                 return false;
             }
-            else if (scrolltrap.trappedElement.options.classname) {
-                scrolltrap.trappedElement.el.classList.remove(scrolltrap.trappedElement.options.classname);
+            else if (scrolltrap._trappedElement.options.classname) {
+                scrolltrap._removeClass(scrolltrap._trappedElement.el, scrolltrap._trappedElement.options.classname);
             }
         }
     };
@@ -137,8 +137,17 @@ var scrolltrap = (function () {
         };
         return _p8() + _p8(true) + _p8(true) + _p8();
     };
+    scrolltrap._addClass = function (el, classname) {
+        if (el.className.indexOf(classname) === -1) {
+            el.className += " " + classname;
+        }
+    };
+    scrolltrap._removeClass = function (el, classname) {
+        if (el.className.indexOf(classname) !== -1) {
+            el.className = el.className.replace(" " + classname, "");
+        }
+    };
     return scrolltrap;
 }());
 scrolltrap.debug = false;
-scrolltrap.elements = [];
-scrolltrap.defaultTrapClassName = "trap-scroll-enabled";
+scrolltrap._elements = [];
