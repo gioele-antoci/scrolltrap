@@ -8,6 +8,14 @@
 
     static attach(el: HTMLElement, options?: scrolltrapOptions): string {
         //Create a trapped element and assign an unique token
+
+        if (!el) {
+            if (scrolltrap.debug) {
+                console.log("element to trap not valid");
+            }
+            return;
+        }
+
         const trapEl: trappedElement = {
             el: el,
             token: scrolltrap._generateToken(),

@@ -1,8 +1,12 @@
 # Scrolltrap
 
-![Dependency Status](https://img.shields.io/badge/Dependencies-None-brightgreen.svg) [![npm version](https://img.shields.io/badge/npm%20package-1.0.0-brightgreen.svg)](https://www.npmjs.com/package/scrolltrap)
+![Dependency Status](https://img.shields.io/badge/Dependencies-None-brightgreen.svg "No dependencies") [![npm version](https://img.shields.io/badge/npm%20package-1.0.0-brightgreen.svg "Go to NPM's website now!")](https://www.npmjs.com/package/scrolltrap)
 
-Prevent page from scrolling after having reached the end of a scrollable element
+Prevent the page from scrolling after having reached the end of a scrollable element.
+Eh?
+
+Check out the demo:
+### [DEMO](https://gioele-antoci.github.io/scrolltrap/ "Check me out!")
 
 
 
@@ -23,7 +27,7 @@ import scrolltrap from 'scrolltrap'
 or
 
 ```js
-const  scrolltrap = require("scrolltrap");
+const scrolltrap = require("scrolltrap");
 ```
 
 **Use a CDN**
@@ -35,6 +39,47 @@ const  scrolltrap = require("scrolltrap");
 ```html
 <script src="scrolltrap.js"></script>
 ```
+
+## How to use
+
+Simply get an element and pass it to `scrolltrap.attach`. That is it.
+```js
+    const trappableEl = document.getElementsByClassName("element-to-trap")[0];
+    scrolltrap.attach(trappableEl);
+```
+
+## API
+
+**Attach trap**
+
+This will inform _scrolltrap_ to listen for future scrolls on the element passed.
+It returns a GUID-like token with which you can later destroy the trap.
+```js
+attach(el: HTMLElement, options?: scrolltrapOptions): string
+```
+
+Optionally a second parameter (options) can be passed.
+
+**Options**
+
+**scrolltrapOptions**
+
+| Field                    | Type       | Default       | Description                                |
+| -----------------        | ---------- | -----------   | ------------------------------------------ |
+| `detectContentChanges` | `boolean` | `false`      | Detects eventual DOM changes inside trapped element. e.g. the element is `contentEditable`
+| `classname`             | `string`  | `NONE`  | Class to add to trapped element once the trap engages. The class will be removed on trap disengagement |
+
+
+**Destroy trap**
+
+This will inform _scrolltrap_ to stop listening to scroll events. Requires the token that was returned when trap got attached.
+```js
+destroy(token: string): void
+```
+___
+* If you need to troubleshoot eventual issues set `scrolltrap.debug` to `true`.
+* The current version of _scrolltrap_ depends on mouse events. You have no mouse, you have no traps.
+* Nested traps are to use to your own peril. 
 
 
 
