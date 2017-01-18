@@ -3,9 +3,8 @@
 ![Dependency Status](https://img.shields.io/badge/Dependencies-None-brightgreen.svg "No dependencies") [![npm version](https://img.shields.io/badge/npm%20package-1.0.0-brightgreen.svg "Go to NPM's website now!")](https://www.npmjs.com/package/scrolltrap)
 
 Prevent the page from scrolling after having reached the end of a scrollable element.
-Eh?
 
-Check out the demo:
+
 ### [DEMO](https://gioele-antoci.github.io/scrolltrap/ "Check me out!")
 
 
@@ -44,8 +43,8 @@ const scrolltrap = require("scrolltrap");
 
 Simply get an element and pass it to `scrolltrap.attach`. That is it.
 ```js
-    const trappableEl = document.getElementsByClassName("element-to-trap")[0];
-    scrolltrap.attach(trappableEl);
+const trappableEl = document.getElementsByClassName("element-to-trap")[0];
+scrolltrap.attach(trappableEl);
 ```
 
 ## API

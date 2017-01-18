@@ -13,7 +13,7 @@
   "description": "Prevent page from scrolling after having reached the end of a scrollable element",
   "main": "dist/scrolltrap.js",
   "bugs": {
-    "url": "https://github.com/latitudegeo/scrolltrap/issues"
+    "url": "https://github.com/gioele-antoci/scrolltrap/issues"
   },
   "keywords": [
     "scrolltrap",
