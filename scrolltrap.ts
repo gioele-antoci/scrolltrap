@@ -2,74 +2,81 @@
 
     private static debug = false;
 
-    private static trappedElements: trappedElement[] = [];
+    private static elements: trappedElement[] = [];
     private static defaultTrapClassName = "trap-scroll-enabled";
     private static listenerToken: number;
 
-    private static trappedObj: trappedObject;
+    private static trappedElement: trappedElement;
 
-    static attachScrolltrap(el: HTMLElement, options?: scrolltrapOptions): string {    
+    static attach(el: HTMLElement, options?: scrolltrapOptions): string {
         //Create a trapped element and assign an unique token
         const trapEl: trappedElement = {
             el: el,
-            token: this.generateToken(),
+            token: scrolltrap._generateToken(),
             options: options || {}
         };
-        this.trappedElements.push(trapEl);
+        scrolltrap.elements.push(trapEl);
 
-        el.addEventListener("mouseleave", this.mouseLeave);
-        el.addEventListener("mouseenter", e => this.mouseEnter(trapEl));
+        el.addEventListener("mouseleave", scrolltrap._mouseLeave);
+        el.addEventListener("mouseenter", e => scrolltrap._mouseEnter(trapEl));
 
         //Return token for later actions on this el
         return trapEl.token;
     }
 
-    static destroyScrolltrap(token: string): void {
+    static destroy(token: string): void {
         //Find elelement we want to destroy and remove it from the array
-        var trappedEl = this.trappedElements.filter((x: trappedElement) => x.token === token)[0];
+        var trappedEl = scrolltrap.elements.filter((x: trappedElement) => x.token === token)[0];
 
         if (trappedEl) {
             //remove item from local collection of trapped elements
-            this.trappedElements.splice(this.trappedElements.indexOf(trappedEl), 1);
+            scrolltrap.elements.splice(scrolltrap.elements.indexOf(trappedEl), 1);
 
             //De-attach event handlers
-            trappedEl.el.removeEventListener("mouseleave", this.mouseLeave);
-            trappedEl.el.removeEventListener("mouseenter", e => this.mouseEnter);
+            trappedEl.el.removeEventListener("mouseleave", scrolltrap._mouseLeave);
+            trappedEl.el.removeEventListener("mouseenter", e => scrolltrap._mouseEnter);
 
-            if (!this.trappedElements.length) {
-                document.removeEventListener("wheel", this.trapWheel);
+            if (!scrolltrap.elements.length) {
+                document.removeEventListener("wheel", scrolltrap._trapWheel);
             }
         }
     }
 
-    private static mouseEnter(trappedEl: trappedElement): void {
-        if (this.debug) {
+    private static _mouseEnter(trappedEl: trappedElement): void {
+        if (scrolltrap.debug) {
             console.log("mouse entered");
         }
 
         //Start listening for scroll events
-        document.addEventListener("wheel", scrolltrap.trapWheel);
-        this.trapEngagementCheck(trappedEl.el);
+        document.addEventListener("wheel", scrolltrap._trapWheel);
+        scrolltrap._trapEngagementCheck(trappedEl);
 
         if (trappedEl.options.detectContentChanges) {
             ((el: HTMLElement) => {
                 //Listen to live mofidications to trapped element
-                el.addEventListener("DOMNodeRemoved DOMNodeInserted input", scrolltrap.domChanged);
+                el.addEventListener("DOMNodeRemoved DOMNodeInserted input", scrolltrap._domChanged);
             })(trappedEl.el);
         }
     }
 
-    private static mouseLeave(e: MouseEvent): void {
-        if (this.debug) {
+    private static _mouseLeave(e: MouseEvent): void {
+        if (scrolltrap.debug) {
             console.log("mouse left");
         }
 
-        document.removeEventListener("wheel", this.trapWheel);
-        document.removeEventListener("DOMNodeRemoved DOMNodeInserted input", scrolltrap.domChanged);
+        document.removeEventListener("wheel", scrolltrap._trapWheel);
+        document.removeEventListener("DOMNodeRemoved DOMNodeInserted input", scrolltrap._domChanged);
         document.body.classList.remove(scrolltrap.defaultTrapClassName);
+
+
+        if (scrolltrap.trappedElement && scrolltrap.trappedElement.options.classname) {
+            scrolltrap.trappedElement.el.classList.remove(scrolltrap.trappedElement.options.classname);
+        }
+
+        scrolltrap.trappedElement = null;
     }
 
-    private static domChanged(e: MouseEvent) {
+    private static _domChanged(e: MouseEvent) {
         if (scrolltrap.debug) {
             console.log(e.type);
         }
@@ -81,53 +88,48 @@
 
         scrolltrap.listenerToken = setTimeout(() => {
             //Re calculate whether trap should be engaged or nto
-            scrolltrap.refreshTrap(<HTMLElement>e.target);
+            scrolltrap._refresh(scrolltrap.trappedElement);
             scrolltrap.listenerToken = null;
         }, 100);
     }
 
-    private static refreshTrap(el: HTMLElement): void {
-        scrolltrap.trapEngagementCheck(el);
+    private static _refresh(trappedEl: trappedElement): void {
+        if (trappedEl) {
+            scrolltrap._trapEngagementCheck(trappedEl);
+        }
     }
 
-    private static trapEngagementCheck(el: HTMLElement): void {
+    private static _trapEngagementCheck(trappedEl: trappedElement): void {
+        const el = trappedEl.el;
         const containerHeight = el.clientHeight;
         const contentHeight = el.scrollHeight; // height of scrollable content
-
-        const scrollableDist = contentHeight - containerHeight;
-
-        if (scrolltrap.debug) {
-            console.log(`container height:${containerHeight}`);
-            console.log(`content height:${contentHeight}`);
-            console.log(`scrollable dist: ${scrollableDist}`);
-        }
 
         // Content is higher than container, scroll bar is VISIBLE
         if (contentHeight > containerHeight) {
             document.body.classList.add(scrolltrap.defaultTrapClassName);
-            scrolltrap.trappedObj = {
-                el,
-                scrollableDistance: scrollableDist
-            };
+            scrolltrap.trappedElement = trappedEl;
         }
 
         //Scroll bar is not VISIBLE
         else {
             document.body.classList.remove(scrolltrap.defaultTrapClassName);
+            scrolltrap.trappedElement = null;
         }
     }
 
-    private static trapWheel(wheelEvent: WheelEvent): boolean {
+    private static _trapWheel(wheelEvent: WheelEvent): boolean {
         //Trap not engaged, let the scroll happen
         if (!document.body.classList.contains(scrolltrap.defaultTrapClassName)) {
-            wheelEvent.preventDefault();
-            return false;
+            if (scrolltrap.trappedElement.options.classname) {
+                scrolltrap.trappedElement.el.classList.remove(scrolltrap.trappedElement.options.classname);
+            }
+            return true;
         }
 
         //
         else {
-
-            const curScrollPos = scrolltrap.trappedObj.el.scrollTop;
+            const el = scrolltrap.trappedElement.el;
+            const curScrollPos = el.scrollTop;
             const dY = wheelEvent.deltaY;
 
             if (scrolltrap.debug) {
@@ -135,22 +137,41 @@
                 console.log(`cursor scroll Pos: ${curScrollPos}`);
             }
 
+            const containerHeight = el.clientHeight;
+            const contentHeight = el.scrollHeight; // height of scrollable content
+            const scrollableDist = contentHeight - containerHeight;
+
+            if (scrolltrap.debug) {
+                console.log(`container height:${containerHeight}`);
+                console.log(`content height:${contentHeight}`);
+                console.log(`scrollable dist: ${scrollableDist}`);
+            }
+
             // only trap events once we've scrolled to the end or beginning
             //Note that a positive deltaY is a scroll down (and viceversa)
-            if ((dY > 0 && (curScrollPos >= scrolltrap.trappedObj.scrollableDistance ||
-                curScrollPos + 1 >= scrolltrap.trappedObj.scrollableDistance)) ||
+            if ((dY > 0 && (curScrollPos >= scrollableDist ||
+                curScrollPos + 1 >= scrollableDist)) ||
                 (dY < 0 && curScrollPos <= 0)) {
 
                 if (scrolltrap.debug) {
                     console.log("trapped");
                 }
+
+                if (scrolltrap.trappedElement.options.classname) {
+                    scrolltrap.trappedElement.el.classList.add(scrolltrap.trappedElement.options.classname);
+                }
+
                 wheelEvent.preventDefault();
                 return false;
+            }
+
+            else if (scrolltrap.trappedElement.options.classname) {
+                scrolltrap.trappedElement.el.classList.remove(scrolltrap.trappedElement.options.classname);
             }
         }
     }
 
-    private static generateToken(): string {
+    private static _generateToken(): string {
         var _p8 = (s?: boolean): string => {
             var p = (Math.random().toString(16) + "000000000").substr(2, 8);
             return s ? "-" + p.substr(0, 4) + "-" + p.substr(4, 4) : p;
@@ -160,19 +181,13 @@
     }
 }
 
-export interface trappedObject {
-    el: HTMLElement;
-    scrollableDistance: number
-
-}
-
 export interface trappedElement {
     token: string;
     el: HTMLElement;
     options?: scrolltrapOptions;
 }
 
-
 export interface scrolltrapOptions {
     detectContentChanges?: boolean;
+    classname?: string;
 }
