@@ -2,7 +2,8 @@
 
 ![Dependency Status](https://img.shields.io/badge/Dependencies-None-brightgreen.svg "No dependencies") [![npm version](https://img.shields.io/badge/npm%20package-1.0.0-brightgreen.svg "Go to NPM's website now!")](https://www.npmjs.com/package/scrolltrap)
 
-Prevent the page from scrolling after having reached the end of a scrollable element.
+Prevent the page from scrolling after having reached the end of a scrollable element.  
+Super lightweight: ~1007 bytes gzipped.
 
 
 ### [DEMO](https://gioele-antoci.github.io/scrolltrap/ "Check me out!")
@@ -36,7 +37,7 @@ const scrolltrap = require("scrolltrap");
 
 **Or grab the file directly** from the [dist](dist) folder
 ```html
-<script src="scrolltrap.js"></script>
+<script src="scrolltrap.min.js"></script>
 ```
 
 ## How to use
@@ -85,7 +86,7 @@ ___
 ## Authors
 
 * **Gioele Antoci** - *Initial work* - [gioele-antoci](https://github.com/gioele-antoci)
-* **Ian Schmitz** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Ian Schmitz** - *Initial work* - [ianSchmitz](https://github.com/ianSchmitz)
 
 ## License
 

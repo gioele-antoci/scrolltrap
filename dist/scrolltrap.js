@@ -1,1 +1,171 @@
-!function(e,n){"function"==typeof define&&define.amd?define([],n):"object"==typeof exports?module.exports=n():e.scrolltrap=n()}(this,function(){var e=function(){function e(){}return e.attach=function(n,t){if(!n)return void(e.debug&&console.log("element to trap not valid"));var o={el:n,token:e._generateToken(),options:t||{}};return e._elements.push(o),n.addEventListener("mouseleave",e._mouseLeave),n.addEventListener("mouseenter",function(n){return e._mouseEnter(o)}),o.token},e.destroy=function(n){var t=e._elements.filter(function(e){return e.token===n})[0];t&&(e._elements.splice(e._elements.indexOf(t),1),t.el.removeEventListener("mouseleave",e._mouseLeave),t.el.removeEventListener("mouseenter",function(n){return e._mouseEnter}),e._elements.length||document.removeEventListener("wheel",e._trapWheel))},e._mouseEnter=function(n){e.debug&&console.log("mouse entered"),document.addEventListener("wheel",e._trapWheel),e._trapEngagementCheck(n),n.options.detectContentChanges&&!function(n){n.addEventListener("DOMNodeRemoved DOMNodeInserted input",e._domChanged)}(n.el)},e._mouseLeave=function(n){e.debug&&console.log("mouse left"),document.removeEventListener("wheel",e._trapWheel),document.removeEventListener("DOMNodeRemoved DOMNodeInserted input",e._domChanged),e.trapEngageable=!1,e._trappedElement&&e._trappedElement.options.classname&&e._removeClass(e._trappedElement.el,e._trappedElement.options.classname),e._trappedElement=null},e._domChanged=function(n){e.debug&&console.log(n.type),e._listenerToken&&clearTimeout(e._listenerToken),e._listenerToken=setTimeout(function(){e._refresh(e._trappedElement),e._listenerToken=null},100)},e._refresh=function(n){n&&e._trapEngagementCheck(n)},e._trapEngagementCheck=function(n){var t=n.el,o=t.clientHeight,l=t.scrollHeight;l>o?(e.trapEngageable=!0,e._trappedElement=n):(e.trapEngageable=!1,e._trappedElement=null)},e._trapWheel=function(n){if(!e.trapEngageable)return e._trappedElement.options.classname&&e._removeClass(e._trappedElement.el,e._trappedElement.options.classname),!0;var t=e._trappedElement.el,o=t.scrollTop,l=n.deltaY;e.debug&&(console.log("delta-y: "+l),console.log("cursor scroll Pos: "+o));var r=t.clientHeight,s=t.scrollHeight,a=s-r;return e.debug&&(console.log("container height:"+r),console.log("content height:"+s),console.log("scrollable dist: "+a)),l>0&&(o>=a||o+1>=a)||l<0&&o<=0?(e.debug&&console.log("trapped"),e._trappedElement.options.classname&&e._addClass(e._trappedElement.el,e._trappedElement.options.classname),n.preventDefault(),!1):void(e._trappedElement.options.classname&&e._removeClass(e._trappedElement.el,e._trappedElement.options.classname))},e._generateToken=function(){var e=function(e){var n=(Math.random().toString(16)+"000000000").substr(2,8);return e?"-"+n.substr(0,4)+"-"+n.substr(4,4):n};return e()+e(!0)+e(!0)+e()},e._addClass=function(e,n){e.className.indexOf(n)===-1&&(e.className+=" "+n)},e._removeClass=function(e,n){e.className.indexOf(n)!==-1&&(e.className=e.className.replace(" "+n,""))},e}();return e.debug=!1,e._elements=[],e});
+;(function(root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define([], factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory();
+  } else {
+    root.scrolltrap = factory();
+  }
+}(this, function() {
+var scrolltrap = (function () {
+    function scrolltrap() {
+    }
+    scrolltrap.attach = function (el, options) {
+        //Create a trapped element and assign an unique token
+        if (!el) {
+            if (scrolltrap.debug) {
+                console.log("element to trap not valid");
+            }
+            return;
+        }
+        var trapEl = {
+            el: el,
+            token: scrolltrap._generateToken(),
+            options: options || {}
+        };
+        scrolltrap._elements.push(trapEl);
+        el.addEventListener("mouseleave", scrolltrap._mouseLeave);
+        el.addEventListener("mouseenter", function (e) { return scrolltrap._mouseEnter(trapEl); });
+        //Return token for later actions on this el
+        return trapEl.token;
+    };
+    scrolltrap.destroy = function (token) {
+        //Find elelement we want to destroy and remove it from the array
+        var trappedEl = scrolltrap._elements.filter(function (x) { return x.token === token; })[0];
+        if (trappedEl) {
+            //remove item from local collection of trapped elements
+            scrolltrap._elements.splice(scrolltrap._elements.indexOf(trappedEl), 1);
+            //De-attach event handlers
+            trappedEl.el.removeEventListener("mouseleave", scrolltrap._mouseLeave);
+            trappedEl.el.removeEventListener("mouseenter", function (e) { return scrolltrap._mouseEnter; });
+            if (!scrolltrap._elements.length) {
+                document.removeEventListener("wheel", scrolltrap._trapWheel);
+            }
+        }
+    };
+    scrolltrap._mouseEnter = function (trappedEl) {
+        if (scrolltrap.debug) {
+            console.log("mouse entered");
+        }
+        //Start listening for scroll events
+        document.addEventListener("wheel", scrolltrap._trapWheel);
+        scrolltrap._trapEngagementCheck(trappedEl);
+        if (trappedEl.options.detectContentChanges) {
+            (function (el) {
+                //Listen to live mofidications to trapped element
+                el.addEventListener("DOMNodeRemoved DOMNodeInserted input", scrolltrap._domChanged);
+            })(trappedEl.el);
+        }
+    };
+    scrolltrap._mouseLeave = function (e) {
+        if (scrolltrap.debug) {
+            console.log("mouse left");
+        }
+        document.removeEventListener("wheel", scrolltrap._trapWheel);
+        document.removeEventListener("DOMNodeRemoved DOMNodeInserted input", scrolltrap._domChanged);
+        scrolltrap.trapEngageable = false;
+        if (scrolltrap._trappedElement && scrolltrap._trappedElement.options.classname) {
+            scrolltrap._removeClass(scrolltrap._trappedElement.el, scrolltrap._trappedElement.options.classname);
+        }
+        scrolltrap._trappedElement = null;
+    };
+    scrolltrap._domChanged = function (e) {
+        if (scrolltrap.debug) {
+            console.log(e.type);
+        }
+        // START Throttler 
+        if (scrolltrap._listenerToken) {
+            clearTimeout(scrolltrap._listenerToken);
+        }
+        scrolltrap._listenerToken = setTimeout(function () {
+            //Re calculate whether trap should be engaged or nto
+            scrolltrap._refresh(scrolltrap._trappedElement);
+            scrolltrap._listenerToken = null;
+        }, 100);
+    };
+    scrolltrap._refresh = function (trappedEl) {
+        if (trappedEl) {
+            scrolltrap._trapEngagementCheck(trappedEl);
+        }
+    };
+    scrolltrap._trapEngagementCheck = function (trappedEl) {
+        var el = trappedEl.el;
+        var containerHeight = el.clientHeight;
+        var contentHeight = el.scrollHeight; // height of scrollable content
+        // Content is higher than container, scroll bar is VISIBLE
+        if (contentHeight > containerHeight) {
+            scrolltrap.trapEngageable = true;
+            scrolltrap._trappedElement = trappedEl;
+        }
+        else {
+            scrolltrap.trapEngageable = false;
+            scrolltrap._trappedElement = null;
+        }
+    };
+    scrolltrap._trapWheel = function (wheelEvent) {
+        //Trap not engaged, let the scroll happen
+        if (!scrolltrap.trapEngageable) {
+            if (scrolltrap._trappedElement.options.classname) {
+                scrolltrap._removeClass(scrolltrap._trappedElement.el, scrolltrap._trappedElement.options.classname);
+            }
+            return true;
+        }
+        else {
+            var el = scrolltrap._trappedElement.el;
+            var curScrollPos = el.scrollTop;
+            var dY = wheelEvent.deltaY;
+            if (scrolltrap.debug) {
+                console.log("delta-y: " + dY);
+                console.log("cursor scroll Pos: " + curScrollPos);
+            }
+            var containerHeight = el.clientHeight;
+            var contentHeight = el.scrollHeight; // height of scrollable content
+            var scrollableDist = contentHeight - containerHeight;
+            if (scrolltrap.debug) {
+                console.log("container height:" + containerHeight);
+                console.log("content height:" + contentHeight);
+                console.log("scrollable dist: " + scrollableDist);
+            }
+            // only trap events once we've scrolled to the end or beginning
+            //Note that a positive deltaY is a scroll down (and viceversa)
+            if ((dY > 0 && (curScrollPos >= scrollableDist ||
+                curScrollPos + 1 >= scrollableDist)) ||
+                (dY < 0 && curScrollPos <= 0)) {
+                if (scrolltrap.debug) {
+                    console.log("trapped");
+                }
+                if (scrolltrap._trappedElement.options.classname) {
+                    scrolltrap._addClass(scrolltrap._trappedElement.el, scrolltrap._trappedElement.options.classname);
+                }
+                wheelEvent.preventDefault();
+                return false;
+            }
+            else if (scrolltrap._trappedElement.options.classname) {
+                scrolltrap._removeClass(scrolltrap._trappedElement.el, scrolltrap._trappedElement.options.classname);
+            }
+        }
+    };
+    scrolltrap._generateToken = function () {
+        var _p8 = function (s) {
+            var p = (Math.random().toString(16) + "000000000").substr(2, 8);
+            return s ? "-" + p.substr(0, 4) + "-" + p.substr(4, 4) : p;
+        };
+        return _p8() + _p8(true) + _p8(true) + _p8();
+    };
+    scrolltrap._addClass = function (el, classname) {
+        if (el.className.indexOf(classname) === -1) {
+            el.className += " " + classname;
+        }
+    };
+    scrolltrap._removeClass = function (el, classname) {
+        if (el.className.indexOf(classname) !== -1) {
+            el.className = el.className.replace(" " + classname, "");
+        }
+    };
+    return scrolltrap;
+}());
+scrolltrap.debug = false;
+scrolltrap._elements = [];
+
+return scrolltrap;
+}));
