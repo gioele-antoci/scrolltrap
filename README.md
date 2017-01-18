@@ -1,6 +1,6 @@
 # Scrolltrap
 
-![Dependency Status](https://img.shields.io/badge/Dependencies-None-brightgreen.svg "No dependencies") [![npm version](https://img.shields.io/badge/npm%20package-1.0.0-brightgreen.svg "Go to NPM's website now!")](https://www.npmjs.com/package/scrolltrap)
+![Dependency Status](https://img.shields.io/badge/Dependencies-None-brightgreen.svg "No dependencies") [![npm version](https://img.shields.io/badge/npm%20package-1.0.3-brightgreen.svg "Go to NPM's website now!")](https://www.npmjs.com/package/scrolltrap)
 
 Prevent the page from scrolling after having reached the end of a scrollable element.  
 Super lightweight: ~1007 bytes gzipped.

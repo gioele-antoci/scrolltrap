@@ -2,3 +2,4 @@ node_modules/
 obj/
 Build.targets
 scrolltrap.csproj
+gulpfile.js
