@@ -1,1 +1,66 @@
-<h1>Hello</h1>
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>TypeScript HTML App</title>
+    <style type="text/css" >
+        body,html{width:100%;height:100%}.content{text-align:center;position:relative;height:100%;width:90%;margin:0 auto}.container{border:1px solid;width:40%;display:inline-block;margin:1em}.element{height:10rem;overflow:auto;font-size:2em}.element.trapped{background-color:#ff0}.other-content{position:relative;border:3px solid #00f;height:100%;margin:1em}.other-content-internal{position:absolute;left:50%;transform:translateX(-50%);font-size:2em}.start{top:0}.end{bottom:0}
+    </style>
+    <script type="text/javascript">
+        (function e(t, n, r) { function s(o, u) { if (!n[o]) { if (!t[o]) { var a = typeof require == "function" && require; if (!u && a) return a(o, !0); if (i) return i(o, !0); var f = new Error("Cannot find module '" + o + "'"); throw f.code = "MODULE_NOT_FOUND", f } var l = n[o] = { exports: {} }; t[o][0].call(l.exports, function (e) { var n = t[o][1][e]; return s(n ? n : e) }, l, l.exports, e, t, n, r) } return n[o].exports } var i = typeof require == "function" && require; for (var o = 0; o < r.length; o++) s(r[o]); return s })({
+            1: [function (require, module, exports) {
+                !function (e, n) { "function" == typeof define && define.amd ? define([], n) : "object" == typeof exports ? module.exports = n() : e.scrolltrap = n() }(this, function () { var e = function () { function e() { } return e.attach = function (n, t) { var o = { el: n, token: e._generateToken(), options: t || {} }; return e._elements.push(o), n.addEventListener("mouseleave", e._mouseLeave), n.addEventListener("mouseenter", function (n) { return e._mouseEnter(o) }), o.token }, e.destroy = function (n) { var t = e._elements.filter(function (e) { return e.token === n })[0]; t && (e._elements.splice(e._elements.indexOf(t), 1), t.el.removeEventListener("mouseleave", e._mouseLeave), t.el.removeEventListener("mouseenter", function (n) { return e._mouseEnter }), e._elements.length || document.removeEventListener("wheel", e._trapWheel)) }, e._mouseEnter = function (n) { e.debug && console.log("mouse entered"), document.addEventListener("wheel", e._trapWheel), e._trapEngagementCheck(n), n.options.detectContentChanges && !function (n) { n.addEventListener("DOMNodeRemoved DOMNodeInserted input", e._domChanged) }(n.el) }, e._mouseLeave = function (n) { e.debug && console.log("mouse left"), document.removeEventListener("wheel", e._trapWheel), document.removeEventListener("DOMNodeRemoved DOMNodeInserted input", e._domChanged), e.trapEngageable = !1, e._trappedElement && e._trappedElement.options.classname && e._removeClass(e._trappedElement.el, e._trappedElement.options.classname), e._trappedElement = null }, e._domChanged = function (n) { e.debug && console.log(n.type), e._listenerToken && clearTimeout(e._listenerToken), e._listenerToken = setTimeout(function () { e._refresh(e._trappedElement), e._listenerToken = null }, 100) }, e._refresh = function (n) { n && e._trapEngagementCheck(n) }, e._trapEngagementCheck = function (n) { var t = n.el, o = t.clientHeight, l = t.scrollHeight; l > o ? (e.trapEngageable = !0, e._trappedElement = n) : (e.trapEngageable = !1, e._trappedElement = null) }, e._trapWheel = function (n) { if (!e.trapEngageable) return e._trappedElement.options.classname && e._removeClass(e._trappedElement.el, e._trappedElement.options.classname), !0; var t = e._trappedElement.el, o = t.scrollTop, l = n.deltaY; e.debug && (console.log("delta-y: " + l), console.log("cursor scroll Pos: " + o)); var r = t.clientHeight, s = t.scrollHeight, a = s - r; return e.debug && (console.log("container height:" + r), console.log("content height:" + s), console.log("scrollable dist: " + a)), l > 0 && (o >= a || o + 1 >= a) || l < 0 && o <= 0 ? (e.debug && console.log("trapped"), e._trappedElement.options.classname && e._addClass(e._trappedElement.el, e._trappedElement.options.classname), n.preventDefault(), !1) : void (e._trappedElement.options.classname && e._removeClass(e._trappedElement.el, e._trappedElement.options.classname)) }, e._generateToken = function () { var e = function (e) { var n = (Math.random().toString(16) + "000000000").substr(2, 8); return e ? "-" + n.substr(0, 4) + "-" + n.substr(4, 4) : n }; return e() + e(!0) + e(!0) + e() }, e._addClass = function (e, n) { e.className.indexOf(n) === -1 && (e.className += " " + n) }, e._removeClass = function (e, n) { e.className.indexOf(n) !== -1 && (e.className = e.className.replace(" " + n, "")) }, e }(); return e.debug = !1, e._elements = [], e });
+            }, {}], 2: [function (require, module, exports) {
+                //import scrolltrap from "scrolltrap";
+                var scrolltrap = require("scrolltrap");
+
+                window.onload = function () {
+                    var trappableEl = document.getElementsByClassName("element-to-trap")[0];
+                    scrolltrap.debug = true;
+                    scrolltrap.attach(trappableEl, { classname: "trapped" });
+                };
+            }, { "scrolltrap": 1 }]
+        }, {}, [2]);
+
+    </script>
+</head>
+<body>
+
+    <div class="content">
+        <div class="other-content">
+            <div class="other-content-internal start">The start.</div>
+        </div>
+        <div class="trappable container">
+            <div class="element-to-trap element">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a purus eget ipsum dictum venenatis. Cras elit quam, fermentum ut blandit vel, tempor sit amet velit. Sed maximus sem nisl, ut suscipit sapien placerat vitae. Suspendisse vitae diam fermentum, consectetur velit quis, aliquet augue. Etiam interdum placerat neque ut tincidunt. Proin dignissim faucibus erat, nec sollicitudin justo ornare ac. Vestibulum quis risus vitae ipsum vulputate fermentum a in enim. Vivamus bibendum lorem at aliquet viverra. Morbi euismod vestibulum lorem eu venenatis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras consectetur nisi mauris, et dignissim turpis tristique in. Donec eu sodales est. Morbi posuere rhoncus tortor, quis semper nibh dictum molestie. Aliquam finibus semper eleifend. Integer luctus egestas ipsum, id finibus diam consequat et. Duis eget felis eu metus viverra euismod.
+
+                Duis rutrum erat felis, vel varius metus molestie non. Donec sit amet eros eu justo commodo ornare non vitae ex. Suspendisse in magna vitae turpis aliquam venenatis ut eget nisl. Sed volutpat aliquet tristique. Nunc ut ante sed arcu vehicula laoreet. Aliquam accumsan ex at metus consequat blandit. Aliquam ante ipsum, ultricies blandit nisi vitae, scelerisque aliquet nisi. Pellentesque ut lorem sed nunc rhoncus maximus. Vivamus suscipit finibus placerat. Donec vitae sem ac erat ornare laoreet sit amet ornare metus. Vestibulum et diam vel turpis commodo euismod sit amet tincidunt lacus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras facilisis tincidunt bibendum. Morbi eget dapibus nisl, id fringilla mi. Vestibulum non ligula eget felis pretium iaculis in ut ex.
+
+                Donec dui erat, lacinia eu scelerisque vitae, sollicitudin et augue. Curabitur interdum lorem ut lacus maximus, at placerat arcu bibendum. Fusce purus nulla, semper hendrerit aliquam ac, malesuada in nunc. Fusce vitae leo erat. Cras nec luctus odio. Nullam ac leo dolor. Duis fringilla eget dolor ut iaculis.
+
+                Maecenas sed auctor libero, quis interdum enim. Integer est velit, pharetra vitae lacus sit amet, lobortis consectetur ex. Aliquam luctus at lectus eget varius. Pellentesque pellentesque sapien sed enim viverra vulputate. Sed et sem nec dui egestas porttitor ut quis ex. Proin ultrices ante enim, quis ullamcorper magna pharetra eget. Vivamus tincidunt accumsan sem, eu vehicula risus sodales sit amet. Praesent nec molestie enim.
+
+                Donec venenatis nisi sapien. Sed pharetra, dolor ut ullamcorper rhoncus, diam augue vulputate metus, et auctor ante nunc in turpis. Nam sed quam maximus, euismod ipsum ac, pellentesque metus. Ut nec quam et lectus feugiat rutrum sit amet non magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Cras bibendum consectetur magna. Phasellus pretium, nunc sit amet gravida luctus, tellus dolor pharetra purus, consequat porta purus enim non elit. Quisque id gravida metus.
+            </div>
+        </div>
+        <div class="not-trapped container">
+            <div class="element">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a purus eget ipsum dictum venenatis. Cras elit quam, fermentum ut blandit vel, tempor sit amet velit. Sed maximus sem nisl, ut suscipit sapien placerat vitae. Suspendisse vitae diam fermentum, consectetur velit quis, aliquet augue. Etiam interdum placerat neque ut tincidunt. Proin dignissim faucibus erat, nec sollicitudin justo ornare ac. Vestibulum quis risus vitae ipsum vulputate fermentum a in enim. Vivamus bibendum lorem at aliquet viverra. Morbi euismod vestibulum lorem eu venenatis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras consectetur nisi mauris, et dignissim turpis tristique in. Donec eu sodales est. Morbi posuere rhoncus tortor, quis semper nibh dictum molestie. Aliquam finibus semper eleifend. Integer luctus egestas ipsum, id finibus diam consequat et. Duis eget felis eu metus viverra euismod.
+
+                Duis rutrum erat felis, vel varius metus molestie non. Donec sit amet eros eu justo commodo ornare non vitae ex. Suspendisse in magna vitae turpis aliquam venenatis ut eget nisl. Sed volutpat aliquet tristique. Nunc ut ante sed arcu vehicula laoreet. Aliquam accumsan ex at metus consequat blandit. Aliquam ante ipsum, ultricies blandit nisi vitae, scelerisque aliquet nisi. Pellentesque ut lorem sed nunc rhoncus maximus. Vivamus suscipit finibus placerat. Donec vitae sem ac erat ornare laoreet sit amet ornare metus. Vestibulum et diam vel turpis commodo euismod sit amet tincidunt lacus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras facilisis tincidunt bibendum. Morbi eget dapibus nisl, id fringilla mi. Vestibulum non ligula eget felis pretium iaculis in ut ex.
+
+                Donec dui erat, lacinia eu scelerisque vitae, sollicitudin et augue. Curabitur interdum lorem ut lacus maximus, at placerat arcu bibendum. Fusce purus nulla, semper hendrerit aliquam ac, malesuada in nunc. Fusce vitae leo erat. Cras nec luctus odio. Nullam ac leo dolor. Duis fringilla eget dolor ut iaculis.
+
+                Maecenas sed auctor libero, quis interdum enim. Integer est velit, pharetra vitae lacus sit amet, lobortis consectetur ex. Aliquam luctus at lectus eget varius. Pellentesque pellentesque sapien sed enim viverra vulputate. Sed et sem nec dui egestas porttitor ut quis ex. Proin ultrices ante enim, quis ullamcorper magna pharetra eget. Vivamus tincidunt accumsan sem, eu vehicula risus sodales sit amet. Praesent nec molestie enim.
+
+                Donec venenatis nisi sapien. Sed pharetra, dolor ut ullamcorper rhoncus, diam augue vulputate metus, et auctor ante nunc in turpis. Nam sed quam maximus, euismod ipsum ac, pellentesque metus. Ut nec quam et lectus feugiat rutrum sit amet non magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Cras bibendum consectetur magna. Phasellus pretium, nunc sit amet gravida luctus, tellus dolor pharetra purus, consequat porta purus enim non elit. Quisque id gravida metus.
+            </div>
+        </div>
+
+        <div class="other-content">
+            <div class="other-content-internal end">The end.</div>
+        </div>
+    </div>
+</body>
+</html>
